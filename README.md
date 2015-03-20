@@ -1,6 +1,8 @@
 simple-magento-vagrant
 ======================
 
+Guest Additions URL: http://download.virtualbox.org/virtualbox/
+
 A VERY simple Magento environment provisioner for [Vagrant](http://www.vagrantup.com/).
 
 ![Magento & Vagrant](https://cookieflow.files.wordpress.com/2013/07/magento_vagrant.jpg?w=525&h=225)

@@ -4,6 +4,17 @@ SAMPLE_DATA=$1
 MAGE_VERSION="1.9.1.0"
 DATA_VERSION="1.9.0.0"
 
+# Set Perl:locales
+# http://serverfault.com/questions/500764/dpkg-reconfigure-unable-to-re-open-stdin-no-file-or-directory
+# --------------------
+#export LANGUAGE=en_US.UTF-8
+#export LANG=en_US.UTF-8
+#export LC_ALL=en_US.UTF-8
+#locale-gen en_US.UTF-8
+#dpkg-reconfigure locales
+
+export DEBIAN_FRONTEND=noninteractive
+
 # Update Apt
 # --------------------
 apt-get update
@@ -13,20 +24,23 @@ apt-get update
 apt-get install -y apache2
 apt-get install -y php5
 apt-get install -y libapache2-mod-php5
-apt-get install -y php5-mysqlnd php5-curl php5-xdebug php5-gd php5-intl php-pear php5-imap php5-mcrypt php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php-soap
+apt-get install -y php5-mysqlnd php5-curl php5-xdebug php5-gd php5-intl php-pear php5-imap php5-mcrypt php5-ming php5-ps php5-pspell php5-recode php5-sqlite php5-tidy php5-xmlrpc php5-xsl php-soap
 
 php5enmod mcrypt
+
+# Install GIT
+apt-get install -y git
 
 # Delete default apache web dir and symlink mounted vagrant dir from host machine
 # --------------------
 rm -rf /var/www/html
-mkdir /vagrant/httpdocs
+mkdir -p /vagrant/httpdocs
+
 ln -fs /vagrant/httpdocs /var/www/html
 
 # Replace contents of default Apache vhost
 # --------------------
 VHOST=$(cat <<EOF
-NameVirtualHost *:8080
 Listen 8080
 <VirtualHost *:80>
   DocumentRoot "/var/www/html"
@@ -97,7 +111,7 @@ fi
 
 
 # Run installer
-if [ ! -f "/vagrant/httpdocs/app/etc/local.xml" ]; then
+#if [ ! -f "/vagrant/httpdocs/app/etc/local.xml" ]; then
   cd /vagrant/httpdocs
   sudo /usr/bin/php -f install.php -- --license_agreement_accepted yes \
   --locale en_US --timezone "America/Los_Angeles" --default_currency USD \
@@ -106,13 +120,21 @@ if [ ! -f "/vagrant/httpdocs/app/etc/local.xml" ]; then
   --use_secure no --secure_base_url "http://127.0.0.1:8080/" --use_secure_admin no \
   --skip_url_validation yes \
   --admin_lastname Owner --admin_firstname Store --admin_email "admin@example.com" \
-  --admin_username admin --admin_password password123123
+  --admin_username admin --admin_password password
   /usr/bin/php -f shell/indexer.php reindexall
-fi
+#fi
 
 # Install n98-magerun
 # --------------------
-cd /vagrant/httpdocs
-wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
-chmod +x ./n98-magerun.phar
-sudo mv ./n98-magerun.phar /usr/local/bin/
+#cd /vagrant/httpdocs
+#wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
+#chmod +x ./n98-magerun.phar
+#sudo mv ./n98-magerun.phar /usr/local/bin/
+
+
+# Clone Module
+# --------------------
+git clone https://github.com/ehime/Magento-POST-Module.git /tmp/post-module
+shopt -s dotglob
+cp -r /tmp/post-module/* /vagrant/httpdocs
+shopt -u dotglob
