@@ -136,7 +136,27 @@ cd /vagrant/httpdocs
 
 # Turn on rewrites
 # --------------------
-mysql -uroot magendb -e "INSERT INTO `core_config_data` VALUES (44,'default',0,'dev/restrict/allow_ips',NULL),(45,'default',0,'dev/debug/profiler','0'),(46,'default',0,'dev/template/allow_symlink','1'),(47,'default',0,'dev/translate_inline/active','0'),(48,'default',0,'dev/translate_inline/active_admin','0'),(49,'default',0,'dev/log/active','0'),(50,'default',0,'dev/log/file','system.log'),(51,'default',0,'dev/log/exception_file','exception.log'),(52,'default',0,'dev/js/merge_files','0'),(53,'default',0,'dev/css/merge_css_files','0');"
+
+    mysql -uroot magentodb -e 'DROP TABLE IF EXISTS `core_config_data`;
+    /*!40101 SET @saved_cs_client     = @@character_set_client */;
+    /*!40101 SET character_set_client = utf8 */;
+    CREATE TABLE `core_config_data` (
+      `config_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT "Config Id",
+      `scope` varchar(8) NOT NULL DEFAULT "default" COMMENT "Config Scope",
+      `scope_id` int(11) NOT NULL DEFAULT "0" COMMENT "Config Scope Id",
+      `path` varchar(255) NOT NULL DEFAULT "general" COMMENT "Config Path",
+      `value` text COMMENT "Config Value",
+      PRIMARY KEY (`config_id`),
+      UNIQUE KEY `UNQ_CORE_CONFIG_DATA_SCOPE_SCOPE_ID_PATH` (`scope`,`scope_id`,`path`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COMMENT="Config Data";
+    /*!40101 SET character_set_client = @saved_cs_client */;
+
+    LOCK TABLES `core_config_data` WRITE;
+    /*!40000 ALTER TABLE `core_config_data` DISABLE KEYS */;
+    INSERT INTO `core_config_data` VALUES (1,"default",0,"web/seo/use_rewrites","1"),(2,"default",0,"admin/dashboard/enable_charts","0"),(3,"default",0,"web/unsecure/base_url","http://127.0.0.1:8080/"),(4,"default",0,"web/secure/base_url","http://127.0.0.1:8080/"),(5,"default",0,"general/locale/code","en_US"),(6,"default",0,"general/locale/timezone","America/Los_Angeles"),(7,"default",0,"currency/options/base","USD"),(8,"default",0,"currency/options/default","USD"),(9,"default",0,"currency/options/allow","USD"),(10,"default",0,"general/region/display_all","1"),(11,"default",0,"general/region/state_required","AT,CA,CH,DE,EE,ES,FI,FR,LT,LV,RO,US"),(12,"default",0,"catalog/category/root_id","2"),(13,"default",0,"payment/paypal_express/skip_order_review_step","1"),(14,"default",0,"payment/payflow_link/mobile_optimized","1"),(15,"default",0,"payment/payflow_advanced/mobile_optimized","1"),(16,"default",0,"payment/hosted_pro/mobile_optimized","1"),(44,"default",0,"dev/restrict/allow_ips",NULL),(45,"default",0,"dev/debug/profiler","0"),(46,"default",0,"dev/template/allow_symlink","1"),(47,"default",0,"dev/translate_inline/active","0"),(48,"default",0,"dev/translate_inline/active_admin","0"),(49,"default",0,"dev/log/active","0"),(50,"default",0,"dev/log/file","system.log"),(51,"default",0,"dev/log/exception_file","exception.log"),(52,"default",0,"dev/js/merge_files","0"),(53,"default",0,"dev/css/merge_css_files","0");
+    /*!40000 ALTER TABLE `core_config_data` ENABLE KEYS */;
+    UNLOCK TABLES;'
+
 /usr/bin/php -f shell/indexer.php reindexall
 
 
@@ -150,8 +170,9 @@ mysql -uroot magendb -e "INSERT INTO `core_config_data` VALUES (44,'default',0,'
 
 # Install modman
 # --------------------
-bash < <(wget -O – https://raw.github.com/colinmollenhour/modman/master/modman-installer)
+su - vagrant -c'bash < <(wget -O – https://raw.github.com/colinmollenhour/modman/master/modman-installer)'
 mv /home/vagrant/bin/modman /usr/local/bin
+
 
 # Clone Module
 # --------------------
