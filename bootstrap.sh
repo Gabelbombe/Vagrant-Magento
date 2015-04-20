@@ -111,18 +111,34 @@ fi
 
 
 # Run installer
-#if [ ! -f "/vagrant/httpdocs/app/etc/local.xml" ]; then
-  cd /vagrant/httpdocs
-  sudo /usr/bin/php -f install.php -- --license_agreement_accepted yes \
-  --locale en_US --timezone "America/Los_Angeles" --default_currency USD \
-  --db_host localhost --db_name magentodb --db_user magentouser --db_pass password \
-  --url "http://127.0.0.1:8080/" --use_rewrites yes \
-  --use_secure no --secure_base_url "http://127.0.0.1:8080/" --use_secure_admin no \
-  --skip_url_validation yes \
-  --admin_lastname Owner --admin_firstname Store --admin_email "admin@example.com" \
-  --admin_username admin --admin_password password
-  /usr/bin/php -f shell/indexer.php reindexall
-#fi
+cd /vagrant/httpdocs
+/usr/bin/php -f install.php --                \
+  --license_agreement_accepted yes            \
+  --locale en_US                              \
+  --timezone "America/Los_Angeles"            \
+  --default_currency USD                      \
+  --db_host localhost                         \
+  --db_name magentodb                         \
+  --db_user magentouser                       \
+  --db_pass password                          \
+  --url "http://127.0.0.1:8080/"              \
+  --use_rewrites yes                          \
+  --use_secure no                             \
+  --secure_base_url "http://127.0.0.1:8080/"  \
+  --use_secure_admin no                       \
+  --skip_url_validation yes                   \
+  --admin_lastname Owner                      \
+  --admin_firstname Store                     \
+  --admin_email "admin@example.com"           \
+  --admin_username ehime                      \
+  --admin_password 'g0tsh0t3'
+
+
+# Turn on rewrites
+# --------------------
+mysql -uroot magendb -e "INSERT INTO `core_config_data` VALUES (44,'default',0,'dev/restrict/allow_ips',NULL),(45,'default',0,'dev/debug/profiler','0'),(46,'default',0,'dev/template/allow_symlink','1'),(47,'default',0,'dev/translate_inline/active','0'),(48,'default',0,'dev/translate_inline/active_admin','0'),(49,'default',0,'dev/log/active','0'),(50,'default',0,'dev/log/file','system.log'),(51,'default',0,'dev/log/exception_file','exception.log'),(52,'default',0,'dev/js/merge_files','0'),(53,'default',0,'dev/css/merge_css_files','0');"
+/usr/bin/php -f shell/indexer.php reindexall
+
 
 # Install n98-magerun
 # --------------------
@@ -132,9 +148,13 @@ fi
 #sudo mv ./n98-magerun.phar /usr/local/bin/
 
 
+# Install modman
+# --------------------
+bash < <(wget -O – https://raw.github.com/colinmollenhour/modman/master/modman-installer)
+mv /home/vagrant/bin/modman /usr/local/bin
+
 # Clone Module
 # --------------------
-git clone https://github.com/ehime/Magento-POST-Module.git /tmp/post-module
-shopt -s dotglob
-cp -r /tmp/post-module/* /vagrant/httpdocs
-shopt -u dotglob
+cd /vagrant/httpdocs
+modman init
+modman clone https://github.com/ehime/Magento-POST-Module.git
