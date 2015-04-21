@@ -137,8 +137,8 @@ cd /vagrant/httpdocs
 
 # Turn on rewrites
 # --------------------
-curl -sSL https://gist.githubusercontent.com/ehime/0dbe79875035d6235720/raw/78a9362a4ebdee0728a452c6eb80180e2e197370/update-core-config.php -o update-core-config.php
-/usr/bin/php -f update-core-config.php
+curl -sSL https://gist.githubusercontent.com/ehime/0dbe79875035d6235720/raw/78a9362a4ebdee0728a452c6eb80180e2e197370/update-core-config.php -o shell/update-core-config.php
+/usr/bin/php -f shell/update-core-config.php
 /usr/bin/php -f shell/indexer.php reindexall
 
 
