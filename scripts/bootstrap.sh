@@ -7,17 +7,17 @@ DATA_VERSION="1.9.0.0"
 # Set Perl:locales
 # http://serverfault.com/questions/500764/dpkg-reconfigure-unable-to-re-open-stdin-no-file-or-directory
 # --------------------
-#export LANGUAGE=en_US.UTF-8
-#export LANG=en_US.UTF-8
-#export LC_ALL=en_US.UTF-8
-#locale-gen en_US.UTF-8
-#dpkg-reconfigure locales
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+locale-gen en_US.UTF-8
+dpkg-reconfigure locales
 
 export DEBIAN_FRONTEND=noninteractive
 
 # Update Apt
 # --------------------
-#apt-get update
+apt-get update
 
 # Install Apache & PHP
 # --------------------
