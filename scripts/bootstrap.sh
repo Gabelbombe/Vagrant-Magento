@@ -4,6 +4,12 @@ SAMPLE_DATA=$1
 MAGE_VERSION="1.9.1.0"
 DATA_VERSION="1.9.0.0"
 
+## Can also be passed via ARGV[0]
+DBHOST='localhost'
+DBUSER='muser'
+DBPASS='password'
+DBNAME='mdb'
+
 # Set Perl:locales
 # http://serverfault.com/questions/500764/dpkg-reconfigure-unable-to-re-open-stdin-no-file-or-directory
 # --------------------
@@ -71,9 +77,10 @@ export DEBIAN_FRONTEND=noninteractive
 
 
 # Install MySQL quietly
-apt-get -q -y install mysql-server-5.5
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS magentodb"
-mysql -u root -e "GRANT ALL PRIVILEGES ON magentodb.* TO 'magentouser'@'localhost' IDENTIFIED BY 'password'"
+echo -e '--> Installing Mysql 5.6'
+apt-get -q -y install mysql-server-5.6
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS ${DBNAME}"
+mysql -u root -e "GRANT ALL PRIVILEGES ON ${DBNAME}.* TO '${DBUSER}'@'${DBHOST}' IDENTIFIED BY '${DBPASS}'"
 mysql -u root -e "FLUSH PRIVILEGES"
 
 
@@ -82,6 +89,7 @@ mysql -u root -e "FLUSH PRIVILEGES"
 # http://www.magentocommerce.com/wiki/1_-_installation_and_configuration/installing_magento_via_shell_ssh
 
 # Download and extract
+echo -e '--> Downloading Magento if required'
 if [[ ! -f "/vagrant/httpdocs/index.php" ]]; then
   cd /vagrant/httpdocs
   wget http://www.magentocommerce.com/downloads/assets/${MAGE_VERSION}/magento-${MAGE_VERSION}.tar.gz
@@ -95,6 +103,7 @@ fi
 
 
 # Sample Data
+echo -e '--> Install sample data if applicable'
 if [[ $SAMPLE_DATA == "true" ]]; then
   cd /vagrant
 
@@ -112,33 +121,33 @@ fi
 
 
 # Run installer
-echo '--> Installing Magento'
+echo -e '--> Installing Magento'
 cd /vagrant/httpdocs
 /usr/bin/php -f install.php --                \
   --license_agreement_accepted yes            \
   --locale en_US                              \
   --timezone "America/Los_Angeles"            \
   --default_currency USD                      \
-  --db_host localhost                         \
-  --db_name magentodb                         \
-  --db_user magentouser                       \
-  --db_pass password                          \
+  --db_host ${DBHOST}                         \
+  --db_name ${DBNAME}                         \
+  --db_user ${DBUSER}                         \
+  --db_pass ${DBPASS}                         \
   --url "http://127.0.0.1:8080/"              \
   --use_rewrites yes                          \
   --use_secure no                             \
   --secure_base_url "http://127.0.0.1:8080/"  \
   --use_secure_admin no                       \
   --skip_url_validation yes                   \
-  --admin_lastname Owner                      \
-  --admin_firstname Store                     \
+  --admin_firstname Test                      \
+  --admin_lastname Admin                      \
   --admin_email "admin@example.com"           \
   --admin_username ehime                      \
-  --admin_password 'password'
+  --admin_password password 2>&1 | tee ~/installer.log
 
 
 # Turn on rewrites
 # --------------------
-echo '--> Enabling Rewrites'
+echo -e '--> Enabling Rewrites'
 curl -sSL https://goo.gl/kfNNbp -o shell/update-core-config.php
 /usr/bin/php -f shell/update-core-config.php
 /usr/bin/php -f shell/indexer.php reindexall
@@ -146,7 +155,7 @@ curl -sSL https://goo.gl/kfNNbp -o shell/update-core-config.php
 
 # Install n98-magerun
 # --------------------
-echo '--> Installing Magerun'
+echo -e '--> Installing Magerun'
 cd /vagrant/httpdocs
 wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
 chmod +x ./n98-magerun.phar
@@ -155,14 +164,14 @@ mv ./n98-magerun.phar /usr/local/bin/
 
 # Install modman
 # --------------------
-echo '--> Installing Modman'
+echo -e '--> Installing Modman'
 su vagrant -c 'sudo bash < <(curl -s -L https://raw.github.com/colinmollenhour/modman/master/modman-installer)'
 mv /home/vagrant/bin/modman /usr/local/bin
 
 
 # Clone Module
 # --------------------
-echo '--> Cloning modules'
+echo -e '--> Cloning modules'
 cd /vagrant/httpdocs
 #modman init
 #modman clone https://github.com/ehime/Magento-POST-Module.git

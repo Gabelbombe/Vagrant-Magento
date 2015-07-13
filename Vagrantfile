@@ -13,8 +13,9 @@ Vagrant.configure("2") do |config|
   # Requires: vagrant plugin install vagrant-vbguest
   config.vbguest.auto_update = false
 
-  # Visit the site at http://192.168.50.4
+  # Visit the site at http://192.168.50.44
   config.vm.network :private_network, ip: "192.168.50.44"
+
   config.vm.network :forwarded_port, guest: 80, host: 8080
 
   # Requires: vagrant plugin install vagrant-vbguest
