@@ -112,6 +112,7 @@ fi
 
 
 # Run installer
+echo '--> Installing Magento'
 cd /vagrant/httpdocs
 /usr/bin/php -f install.php --                \
   --license_agreement_accepted yes            \
@@ -137,6 +138,7 @@ cd /vagrant/httpdocs
 
 # Turn on rewrites
 # --------------------
+echo '--> Enabling Rewrites'
 curl -sSL https://goo.gl/kfNNbp -o shell/update-core-config.php
 /usr/bin/php -f shell/update-core-config.php
 /usr/bin/php -f shell/indexer.php reindexall
@@ -144,20 +146,23 @@ curl -sSL https://goo.gl/kfNNbp -o shell/update-core-config.php
 
 # Install n98-magerun
 # --------------------
-#cd /vagrant/httpdocs
-#wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
-#chmod +x ./n98-magerun.phar
-#sudo mv ./n98-magerun.phar /usr/local/bin/
+echo '--> Installing Magerun'
+cd /vagrant/httpdocs
+wget https://raw.github.com/netz98/n98-magerun/master/n98-magerun.phar
+chmod +x ./n98-magerun.phar
+mv ./n98-magerun.phar /usr/local/bin/
 
 
 # Install modman
 # --------------------
-su - vagrant -c'bash < <(curl -s -L https://raw.github.com/colinmollenhour/modman/master/modman-installer)'
+echo '--> Installing Modman'
+su vagrant -c 'sudo bash < <(curl -s -L https://raw.github.com/colinmollenhour/modman/master/modman-installer)'
 mv /home/vagrant/bin/modman /usr/local/bin
 
 
 # Clone Module
 # --------------------
+echo '--> Cloning modules'
 cd /vagrant/httpdocs
-modman init
-modman clone https://github.com/ehime/Magento-POST-Module.git
+#modman init
+#modman clone https://github.com/ehime/Magento-POST-Module.git
