@@ -8,7 +8,7 @@ A VERY simple Magento environment provisioner for [Vagrant](http://www.vagrantup
 ![Magento & Vagrant](https://cookieflow.files.wordpress.com/2013/07/magento_vagrant.jpg?w=525&h=225)
 
 * Creates a running Magento development environment with a few simple commands.
-* Runs on Ubuntu (Trusty 14.04 64 Bit) \w PHP 5.5, MySQL 5.5, Apache 2.2
+* Runs on Ubuntu (Trusty 14.04 64 Bit) \w PHP 5.6, MySQL 5.6, Apache 2.4+
 * Uses [Magento CE 1.9.1.0](http://www.magentocommerce.com/download)
 * Automatically runs Magento's installer and creates CMS admin account.
 * Optionally installs Magento Sample Store Inventory
@@ -22,7 +22,7 @@ A VERY simple Magento environment provisioner for [Vagrant](http://www.vagrantup
 
 * Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Install [Vagrant](http://www.vagrantup.com/)
-* Clone or [download](https://github.com/r-baker/simple-magento-vagrant/archive/master.zip) this repository to the root of your project directory `git clone https://github.com/r-baker/simple-magento-vagrant.git`
+* Clone or [download](https://github.com/ehime/Vagrant-Magento/archive/v0.1.0.zip) this repository to the root of your project directory `git clone https://github.com/ehime/Vagrant-Magento.git`
 * In your project directory, run `vagrant up`
 
 The first time you run this, Vagrant will download the bare Ubuntu box image. This can take a little while as the image is a few-hundred Mb. This is only performed once.
@@ -33,9 +33,14 @@ Vagrant will configure the base system before downloading Magento and running th
 
 * In your browser, head to `127.0.0.1:8080`
 * Magento CMS is accessed at `127.0.0.1:8080/admin`
-* User: `admin` Password: `password123123`
+* User: `ehime` Password: `password`
 * Access the virtual machine directly using `vagrant ssh`
 * When you're done `vagrant halt`
+
+#### Note
+
+You can also patch your host file with the following information `192.168.50.44 magento.io www.magento.io` to browser using [magento.io](http://www.magento.io)
+
 
 [Full Vagrant command documentation](http://docs.vagrantup.com/v2/cli/index.html)
 
