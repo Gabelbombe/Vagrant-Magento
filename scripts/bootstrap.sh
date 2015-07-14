@@ -142,7 +142,7 @@ cd /vagrant/httpdocs
   --admin_lastname Admin                      \
   --admin_email "admin@example.com"           \
   --admin_username ehime                      \
-  --admin_password password 2>&1 | tee ~/installer.log
+  --admin_password 'passw0rd' 2>&1 | tee ~/installer.log
 
 
 # Turn on rewrites
