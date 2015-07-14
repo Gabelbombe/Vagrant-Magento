@@ -3,12 +3,13 @@
 
 # To install store sample data
 sample_data = "false"
+nuke_n_pave = "true"
 
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.hostname = "magento.io"
 
-  config.vm.provision :shell, :path => "scripts/bootstrap.sh", :args => [sample_data]
+  config.vm.provision :shell, :path => "scripts/bootstrap.sh", :args => [sample_data, nuke_n_pave]
 
   # Requires: vagrant plugin install vagrant-vbguest
   config.vbguest.auto_update = false

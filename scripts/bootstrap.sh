@@ -4,6 +4,8 @@ SAMPLE_DATA=$1
 MAGE_VERSION="1.9.1.0"
 DATA_VERSION="1.9.0.0"
 
+NUKE=${2}
+
 ## Can also be passed via ARGV[0]
 DBHOST='localhost'
 DBUSER='muser'
@@ -90,13 +92,14 @@ mysql -u root -e "FLUSH PRIVILEGES"
 
 # Download and extract
 echo -e '--> Downloading Magento if required'
-if [[ ! -f "/vagrant/httpdocs/index.php" ]]; then
+if [[ ! -f "/vagrant/httpdocs/index.php" ]] || [ 'true' == $NUKE ]; then
   cd /vagrant/httpdocs
   wget http://www.magentocommerce.com/downloads/assets/${MAGE_VERSION}/magento-${MAGE_VERSION}.tar.gz
   tar -zxvf magento-${MAGE_VERSION}.tar.gz
   mv magento/* magento/.htaccess .
   chmod -R o+w media var
   chmod o+w app/etc
+
   # Clean up downloaded file and extracted dir
   rm -rf magento*
 fi
